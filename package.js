@@ -24,18 +24,6 @@ Package.onUse(function (api) {
         'sbj:lib',
         'callback-hook'
     ]);
-    //api.use('accounts-base@1.0.2', ['client', 'server']);
-    //// Export Accounts (etc) to packages using this one.
-    //api.imply('accounts-base@1.0.2', ['client', 'server']);
-    //api.use('srp@1.0.2', ['client', 'server']);
-    //api.use('sha@1.0.2', ['client', 'server']);
-    //api.use('email@1.0.5', ['server']);
-    //api.use('random@1.0.2', ['server']);
-    //api.use('ejson@1.0.5', 'server');
-    //api.use('callback-hook@1.0.2', 'server');
-    //api.use('check@1.0.4');
-    //api.use('underscore@1.0.2');
-    //api.use('ddp@1.0.14', ['client', 'server']);
 
     api.addFiles('lib/sms_server.js', 'server');
     api.addFiles('lib/phone_server.js', 'server');
@@ -51,6 +39,7 @@ Package.onTest(function (api) {
         'sanjo:jasmine@0.18.0',
         'xolvio:webdriver@0.5.2',
         'accounts-password',
+        'promise@0.4.1',
         'sbj:fixtures'
 
     ]);
