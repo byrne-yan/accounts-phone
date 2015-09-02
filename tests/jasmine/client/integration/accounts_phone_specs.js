@@ -24,6 +24,8 @@ describe('accounts-phone-client',function(){
                 //console.log("error object",err);
                 expect(err).toBeUndefined();
                 expect(Meteor.user().phone).toEqual({number:'18912345678',verified:false});
+                expect(Meteor.user().username).toEqual('本机号码');
+                expect(Meteor.user().profile).toBeDefined();
                 done();
             })
         });
