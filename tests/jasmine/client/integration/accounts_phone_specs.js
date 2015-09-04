@@ -1,5 +1,38 @@
 describe('accounts-phone-client',function(){
+    var getSMS, requestSMS, verify;
+    requestSMS = function (phone) {
+        return new Promise(function (resolve, reject) {
+            Accounts.requestPhoneVerification(phone, function (err) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
+                }
+            );
+        });
+    };
 
+    getSMS = function (phone) {
+        return new Promise(function (resolve, reject) {
+            Meteor.call('fixtures/getSMSCode', phone, function (err, code) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(code);
+                }
+            });
+        })
+    };
+
+    verify = function (phone, code) {
+        return new Promise(function (resolve, reject) {
+            Accounts.verifyPhone(phone, code, function (err) {
+                if (err) reject(err);
+                else resolve();
+            })
+        })
+    };
 
     describe('acconts-creation',function(){
         beforeAll(function(done){
@@ -30,6 +63,24 @@ describe('accounts-phone-client',function(){
             })
         });
 
+        it('can create a user with a phone number by verification', function (done) {
+            Accounts.requestPhoneVerification('18012345678', {name: 'tester nick name'}, function (err) {
+                if (err)
+                    return done.fail();
+                getSMS('18012345678')
+                    .then(function (code) {
+                        return verify('18012345678', code)
+                    }, done.fail)
+                    .then(function () {
+                        expect(Meteor.user().phone).toEqual({number: '18012345678', verified: true});
+                        expect(Meteor.user().username).toEqual('号码18012345678');
+                        expect(Meteor.user().profile).toBeDefined();
+                        expect(Meteor.user().profile.name).toEqual('tester nick name');
+                        done();
+                    }).catch(done.fail)
+            });
+        });
+
     });
 
     describe('accoutn-login',function() {
@@ -49,42 +100,10 @@ describe('accounts-phone-client',function(){
             });
         });
 
-        var getSMS, requestSMS, verify;
+
         beforeEach(function (done) {
             //console.log('accoutn-login:beforeEach');
-            requestSMS = function (phone) {
-                return new Promise(function (resolve, reject) {
-                    Accounts.requestPhoneVerification(phone, function (err) {
-                            if (err) {
-                                reject(err);
-                            } else {
-                                resolve();
-                            }
-                        }
-                    );
-                });
-            };
 
-            getSMS = function (phone) {
-                return new Promise(function (resolve, reject) {
-                    Meteor.call('fixtures/getSMSCode', phone, function (err, code) {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(code);
-                        }
-                    });
-                })
-            };
-
-            verify = function (phone, code) {
-                return new Promise(function (resolve, reject) {
-                    Accounts.verifyPhone(phone, code, function (err) {
-                        if (err) reject(err);
-                        else resolve();
-                    })
-                })
-            };
             done();
         });
         afterEach(function (done) {
@@ -117,6 +136,7 @@ describe('accounts-phone-client',function(){
                     done();
                 }, done.fail);
         });
+
 
         it('can login with a phone without password', function (done) {
             requestSMS('15012345678')
