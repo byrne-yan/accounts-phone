@@ -37,13 +37,13 @@ describe('accounts-phone-client',function(){
     describe('acconts-creation',function(){
         beforeAll(function(done){
             //console.log('acconts-creation:beforeAll');
-            Meteor.call('fixtures/reset',function(){
+            Meteor.call('fixtures/users/reset',function(){
                 done();
             });
         });
 
         beforeEach(function(done){
-            Meteor.call('fixtures/reset',function(){
+            Meteor.call('fixtures/users/reset',function(){
                 done();
             });
         });
@@ -86,7 +86,7 @@ describe('accounts-phone-client',function(){
     describe('accoutn-login',function() {
         //console.log('accoutn-login:beforeAll');
         beforeAll(function (done) {
-            Meteor.call('fixtures/reset', function () {
+            Meteor.call('fixtures/users/reset', function () {
                 Accounts.createUser({
                     username: '本机号码',
                     phone: '18612345678',

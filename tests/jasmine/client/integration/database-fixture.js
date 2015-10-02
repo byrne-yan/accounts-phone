@@ -1,1 +1,1 @@
-    //Meteor.call('fixtures/reset');
+    //Meteor.call('fixtures/users/reset');
