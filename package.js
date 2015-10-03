@@ -22,6 +22,7 @@ Package.onUse(function (api) {
     //api.use('npm-bcrypt@=0.7.8_2', 'server');
     api.use([
         'sbj:lib',
+        'sbj:sms',
         'callback-hook'
     ]);
 
@@ -29,14 +30,14 @@ Package.onUse(function (api) {
     api.addFiles('lib/phone_server.js', 'server');
     api.addFiles('lib/phone_client.js', 'client');
 
-    api.export('SMS', 'server');
+    //api.export('SMS', 'server');
     //api.export('SMSTest', 'server', {testOnly: true});
 });
 
 Package.onTest(function (api) {
     api.use([
         'sbj:accounts-phone',
-        'sanjo:jasmine@0.18.0',
+        'sanjo:jasmine@0.20.0',
         'xolvio:webdriver@0.5.2',
         'accounts-password',
         'promise@0.4.1',
@@ -49,5 +50,5 @@ Package.onTest(function (api) {
     //api.addFiles('sms_tests_setup.js', 'server');
     //api.addFiles('tests/jasmine/client/integration/database-fixture.js', 'client');
     api.addFiles('tests/jasmine/client/integration/accounts_phone_specs.js', 'client');
-    api.addFiles('tests/jasmine/client/integration/database-reset-server.js', 'server');
+    //api.addFiles('tests/jasmine/client/integration/database-reset-server.js', 'server');
 });

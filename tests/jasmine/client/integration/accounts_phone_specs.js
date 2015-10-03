@@ -16,6 +16,7 @@ describe('accounts-phone-client',function(){
     getSMS = function (phone) {
         return new Promise(function (resolve, reject) {
             Meteor.call('fixtures/getSMSCode', phone, function (err, code) {
+                //debugger;
                 if (err) {
                     reject(err);
                 } else {
@@ -34,14 +35,7 @@ describe('accounts-phone-client',function(){
         })
     };
 
-    describe('acconts-creation',function(){
-        beforeAll(function(done){
-            //console.log('acconts-creation:beforeAll');
-            Meteor.call('fixtures/users/reset',function(){
-                done();
-            });
-        });
-
+    describe('accounts-creation',function(){
         beforeEach(function(done){
             Meteor.call('fixtures/users/reset',function(){
                 done();
@@ -66,26 +60,35 @@ describe('accounts-phone-client',function(){
         it('can create a user with a phone number by verification', function (done) {
             Accounts.requestPhoneVerification('18012345678', {name: 'tester nick name'}, function (err) {
                 if (err)
-                    return done.fail();
+                {
+                    expect(err).toBeUndefined();
+                    done();
+                }
                 getSMS('18012345678')
                     .then(function (code) {
                         return verify('18012345678', code)
-                    }, done.fail)
+                    }, (err)=>{
+                        expect(err).toBeUndefined();
+                        done();
+                    })
                     .then(function () {
                         expect(Meteor.user().phone).toEqual({number: '18012345678', verified: true});
                         expect(Meteor.user().username).toEqual('号码18012345678');
                         expect(Meteor.user().profile).toBeDefined();
                         expect(Meteor.user().profile.name).toEqual('tester nick name');
                         done();
-                    }).catch(done.fail)
+                    }).catch((err)=>{
+                        expect(err).toBeDefined();
+                        done();
+                    })
             });
         });
 
     });
 
-    describe('accoutn-login',function() {
+    describe('account-login',function() {
         //console.log('accoutn-login:beforeAll');
-        beforeAll(function (done) {
+        beforeEach(function (done) {
             Meteor.call('fixtures/users/reset', function () {
                 Accounts.createUser({
                     username: '本机号码',
@@ -100,12 +103,6 @@ describe('accounts-phone-client',function(){
             });
         });
 
-
-        beforeEach(function (done) {
-            //console.log('accoutn-login:beforeEach');
-
-            done();
-        });
         afterEach(function (done) {
             //console.log('accoutn-login:afterEach');
             Meteor.logout(function () {
@@ -126,15 +123,24 @@ describe('accounts-phone-client',function(){
             requestSMS('18612345678')
                 .then(function () {
                     return getSMS('18612345678')
-                }, done.fail)
+                }, (err)=>{
+                    expect(err).toBeDefined();
+                    done();
+                })
                 .then(function (code) {
                     return verify('18612345678', code);
-                }, done.fail)
+                }, (err)=>{
+                    expect(err).toBeDefined();
+                    done();
+                })
                 .then(function () {
                     expect(Meteor.user().phone.number).toEqual('18612345678');
                     expect(Meteor.user().phone.verified).toBe(true);
                     done();
-                }, done.fail);
+                }, (err)=>{
+                    expect(err).toBeDefined();
+                    done();
+                });
         });
 
 
@@ -142,17 +148,26 @@ describe('accounts-phone-client',function(){
             requestSMS('15012345678')
                 .then(function () {
                     return getSMS('15012345678')
-                }, done.fail)
+                }, (err)=>{
+                    expect(err).toBeDefined();
+                    done();
+                })
                 .then(function (code) {
                     return verify('15012345678', code)
-                }, done.fail)
+                }, (err)=>{
+                    expect(err).toBeUndefined();
+                    done();
+                })
                 .then(function () {
                     expect(Meteor.user()).toBeDefined();
                     expect(Meteor.user().phone).toBeDefined();
                     expect(Meteor.user().phone.number).toEqual('15012345678');
                     expect(Meteor.user().phone.verified).toBe(true);
                     done();
-                }, done.fail);
+                }, (err)=>{
+                    expect(err).toBeDefined();
+                    done();
+                });
         });
 
         it('can not sent others phone for a logined user', function (done) {
@@ -161,18 +176,30 @@ describe('accounts-phone-client',function(){
             requestSMS(phone1)
                 .then(function () {
                     return getSMS(phone1)
-                }, done.fail)
+                }, (err)=>{
+                    expect(err).toBeDefined();
+                    done();
+                })
                 .then(function (code) {
                     return verify(phone1, code)
-                }, done.fail)
+                }, (err)=>{
+                    expect(err).toBeDefined();
+                    done();
+                })
                 .then(function () {
                     expect(Meteor.user().phone.number).toEqual(phone1);
                     expect(Meteor.user().phone.verified).toBe(true);
-                }, done.fail)
+                }, (err)=>{
+                    expect(err).toBeDefined();
+                    done();
+                })
                 .then(function () {
                     return requestSMS(phone2)
-                }, done.fail)
-                .then(done.fail,done)
+                })
+                .catch((err)=>{
+                    expect(err).toBeDefined();
+                    done();
+                })
         });
 
         it('can login without password with two phone consecutively', function (done) {
