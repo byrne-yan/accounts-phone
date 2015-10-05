@@ -26,7 +26,6 @@ Package.onUse(function (api) {
         'callback-hook'
     ]);
 
-    api.addFiles('lib/sms_server.js', 'server');
     api.addFiles('lib/phone_server.js', 'server');
     api.addFiles('lib/phone_client.js', 'client');
 
