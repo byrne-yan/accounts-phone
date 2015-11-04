@@ -36,7 +36,7 @@ Package.onUse(function (api) {
 Package.onTest(function (api) {
     api.use([
         'sbj:accounts-phone',
-        'sanjo:jasmine@0.20.0',
+        'sanjo:jasmine@0.20.2',
         'xolvio:webdriver@0.5.2',
         'accounts-password',
         'promise@0.4.1',
